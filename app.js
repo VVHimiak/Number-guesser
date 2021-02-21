@@ -32,23 +32,52 @@ function checkNum (){
   let guess = parseInt(UIguessInput.value);
   
 
-  if(isNaN(guess) || guess > max || guess < min){
+  if(!guess || isNaN(guess) || guess > max || guess < min){
     setMessage(`Please enter a number between ${min} and ${max}`, 'red');
   }
 
   if(guess === winningNum){
-    //Disable input
-    UIguessInput.disabled = true;
-    //Set input border color
-    UIguessInput.style.borderColor = 'green';
-    //Change text of submit button
-    UIguessBtn.value = 'Play again'
-    setMessage(`${winningNum} is correct! YOU WIN`, 'green');
+    //game over - won
+    gameOver(true, `${winningNum} is correct! YOU WIN`);
+  } else {
+    //Wrong number
+      guessesLeft -= 1;
+      
+      if(guessesLeft === 0){
+        //game over - lost
+        gameOver(false, `YOU LOSE! Correct number is ${winningNum}`);
+      } else {
+        
+        //game continues - answer wrong
+
+        //Set input border color
+        UIguessInput.style.borderColor = 'red';
+        //Tell user its a wrong number
+        setMessage(`${guess} is not correct.${guessesLeft} guesses left`);
+        //Clear input value
+        UIguessInput.value = '';
+      }
   }
   console.log(guess)
 }
+//Game over 
+function gameOver(won, msg){
+    //Set color var
+    let color;
+    won === true ? color = 'green': color = 'red';
 
+    //Disable input
+    UIguessInput.disabled = true;
+
+    //Set input border color
+    UIguessInput.style.borderColor = color;
+
+    //Tell user its a wrong number
+    setMessage(msg, color);
+}
+
+//setMessage function
 function setMessage(message, color){
-  UImessage.style.color = color
+  UImessage.style.color = color;
   UImessage.textContent = message;
 }
